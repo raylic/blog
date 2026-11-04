@@ -1,0 +1,24 @@
+---
+import Base from './Base.astro';
+import Header from '../components/Header.astro';
+import Nav from '../components/Nav.astro';
+
+interface Props {
+  title?: string;
+  description?: string;
+}
+
+const { title, description } = Astro.props;
+---
+
+<Base title={title} description={description}>
+  <div class="shell">
+    <Header />
+    <div class="home-body">
+      <Nav />
+      <main class="main">
+        <slot />
+      </main>
+    </div>
+  </div>
+</Base>

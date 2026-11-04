@@ -1,0 +1,18 @@
+---
+import { getCollection } from 'astro:content';
+import List from '../layouts/List.astro';
+import PostCard from '../components/PostCard.astro';
+import { groupByMonth } from '../lib/posts';
+
+const all = (await getCollection('posts', ({ data }) => !data.draft)).filter(Boolean);
+const groups = groupByMonth(all);
+---
+
+<List title="归档" description="全部文章，按月分组">
+  {groups.map((g) => (
+    <section class="month">
+      <div class="month-label">{g.label}</div>
+      {g.posts.map((p) => <PostCard post={p} />)}
+    </section>
+  ))}
+</List>

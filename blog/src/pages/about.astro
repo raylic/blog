@@ -1,0 +1,19 @@
+---
+import List from '../layouts/List.astro';
+---
+
+<List title="关于" description="关于 raylic.work">
+  <div class="month">
+    <div class="month-label">关于</div>
+    <div class="about">
+      <p>这是 raylic.work 的个人博客。用 <a href="/tags/Astro">Astro</a> 写成，纯静态、无服务端，构建即产物。</p>
+      <p>内容围绕「写作 · 项目 · 笔记」三个主题，排版对着 Daring Fireball 一条条落的。</p>
+    </div>
+  </div>
+</List>
+
+<style>
+  .about { font-size: 15px; color: var(--c-summary); line-height: 1.8; }
+  .about p { margin-bottom: 16px; }
+  .about a { color: var(--c-ink); }
+</style>

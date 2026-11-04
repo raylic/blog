@@ -1,0 +1,107 @@
+---
+// 搜索框：引入 pagefind 运行时（构建后可用），渲染输入框 + 结果列表。
+// 开发期没有索引时不报错，仅提示。
+---
+<div class="search-block">
+  <span class="search-label">搜索</span>
+  <div class="search">
+    <input
+      id="pf-input"
+      class="search-input"
+      type="search"
+      placeholder="搜索文章…"
+      aria-label="搜索文章"
+      autocomplete="off"
+    />
+    <div id="pf-results" class="search-results" hidden></div>
+  </div>
+</div>
+
+<script>
+  // pagefind 运行时在 head 里以 defer 引入；这里等 DOM 就绪后挂载 UI。
+  function mountPagefind() {
+    const el = document.getElementById('pf-input');
+    if (!el) return;
+    // 只有构建产物里才有 PagefindUI；dev 模式跳过。
+    if (!(window as any).PagefindUI) {
+      el.placeholder = '搜索（构建后可用）';
+      return;
+    }
+    (window as any)
+      .PagefindUI({
+        input: '#pf-input',
+        showResultURL: false,
+        hideSource: false,
+        baseURL: '/pagefind/',
+      })
+      .catch(() => {
+        el.placeholder = '搜索（索引缺失）';
+      });
+  }
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', mountPagefind);
+  } else {
+    mountPagefind();
+  }
+</script>
+
+<style>
+  .search-block {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 8px;
+  }
+  .search-label {
+    font-size: var(--fs-tagline);
+    color: var(--c-muted);
+    letter-spacing: var(--ls-label);
+    line-height: 1.4;
+    width: var(--search-w);
+    text-align: right;
+  }
+  .search { position: relative; width: var(--search-w); }
+  .search-input {
+    width: 100%;
+    height: 26px;
+    font-family: var(--f-sans);
+    font-size: var(--fs-search);
+    color: var(--c-body);
+    background: var(--search-bg);
+    border: 1px solid #888;
+    border-radius: 0;
+    padding: 0 8px;
+    outline: none;
+  }
+  .search-input::placeholder { color: var(--c-placeholder); }
+  .search-input:focus { border-color: #b6bcc2; }
+  .search-results {
+    position: absolute;
+    top: calc(100% + 4px);
+    right: 0;
+    width: 280px;
+    max-height: 320px;
+    overflow-y: auto;
+    background: #414951;
+    border: 1px solid var(--c-rule);
+    border-radius: 4px;
+    padding: 8px;
+    z-index: 10;
+  }
+  .search-results[hidden] { display: none; }
+  .search-results a {
+    display: block;
+    padding: 6px 8px;
+    font-size: 14px;
+    color: var(--c-ink);
+    border-radius: 3px;
+    text-decoration: none;
+  }
+  .search-results a:hover,
+  .search-results a.highlight { background: #4a525a; text-decoration: none; }
+  .search-results .document-title { font-weight: 500; color: var(--c-body); }
+  @media (max-width: 760px) {
+    .search-block { align-items: flex-start; }
+    .search-label { text-align: left; }
+  }
+</style>

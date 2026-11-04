@@ -1,0 +1,525 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title></title>
+<!-- 作品页：横向，一格一屏 + 原生 scroll-snap。
+     样式表整段复制自 index.html（多余规则不碍事），为了拿到 .vf 那套作品帧样式。
+     数据两个文件各存一份 —— 改文案要改两处。 -->
+<style>
+  /* ── 配色：dbushell.com（oklch 转 hex） ───────────────────────── */
+  :root{
+    --bg:#FCF8EE;        /* off-white  画布底 */
+    --paper:#FFFFFF;     /* white      帧底   */
+    --ink:#4F4545;       /* brown      正文   */
+    --ink-60:#4F4545A6;  /* 次级文字 */
+    --ink-08:#4F45450A;  /* 极浅底   */
+    --link:#0096BE;      /* blue       链接 */
+    --accent:#FF5F78;    /* pink       强调 */
+    --line:#96E6C8;      /* green      分隔线 */
+
+    /* 配色 */
+    --brand-text:#4f4545;    /* 主文字（暖棕） */
+    --brand-red:#d1364f;     /* 标题 / 「打开作品」按钮 / 胶带上的贴纸：dbushell --color-red */
+    --brand-yellow:#fffabe;  /* strong 的黄下划线高亮：dbushell --color-yellow */
+    --brand-blue:#0096be;    /* 封面字标描边：dbushell --color-blue */
+    --brand-pink:#ff5f78;    /* 封面星号：dbushell --color-pink，他星号的默认色 */
+    --brand-mint:#96e6c8;    /* 封面椭圆渐变起：--color-green */
+    /* 等宽字栈：目录帧的计数 / 状态用它（Pen 画布用的是 JetBrains Mono） */
+    --mono:"JetBrains Mono",ui-monospace,"SF Mono",SFMono-Regular,Menlo,Consolas,monospace;
+
+    /* 棋盘格胶带的颜色由 .vf 上的 --stripe 决定（逐帧交替红/蓝） */
+
+    /* ── 布局：rauno.me 实测值 ─────────────── */
+    --fw:1200px;
+    --fh:720px;
+    --gap:40px;
+    --pitch:1240px;      /* fw + gap */
+    --line-w:1px;
+    --line-h:18px;
+    --line-gap:9px;
+  }
+
+  *{box-sizing:border-box;margin:0;padding:0}
+
+  html{background:var(--bg);scrollbar-width:none}
+  html::-webkit-scrollbar{display:none}
+  body{
+    background:var(--bg);color:var(--ink);
+    font-family:"Noto Sans SC","PingFang SC","Hiragino Sans GB","Microsoft YaHei",
+                -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+    font-weight:400;
+    -webkit-font-smoothing:antialiased;
+    scrollbar-width:none;
+  }
+  body::-webkit-scrollbar{display:none}
+
+  /* ══ 版式：纵向三段（主页 / 目录 / 作品区）+ 作品区里的横向滚动条 ══
+     document 就是纵向文档流，不再有 ghost / 固定舞台 / 整体 translateX。
+     横向手势只在 .strip 里被消费；主页和目录上横滑等于没反应。 */
+  html,body{overflow-x:hidden}
+
+  /* 每一段占一屏，里面居中放一张 1200×720 的帧 */
+  .page{height:100vh;display:grid;place-items:center;overflow:hidden}
+
+  .frame{
+    width:var(--fw);height:var(--fh);
+    background:transparent;
+    color:var(--ink);text-decoration:none;
+    outline:0;
+    transform:scale(var(--fit,1));transform-origin:center center;
+    -webkit-user-select:none;user-select:none;
+  }
+  .frame:focus-visible{outline:4px solid var(--accent);outline-offset:8px}
+
+  /* 作品区：原生横向滚动条，一格一屏、吸附对齐 */
+  .strip{
+    display:flex;width:100%;height:100%;
+    overflow-x:auto;overflow-y:hidden;
+    scroll-snap-type:x mandatory;     /* 横向容器独立，交给浏览器自己吸 */
+    scrollbar-width:none;
+  }
+  .strip::-webkit-scrollbar{display:none}
+  .cell{flex:0 0 100vw;display:grid;place-items:center;scroll-snap-align:center}
+
+  /* ── 封面帧：dbushell 首页 hero + Intro 的布局 ── */
+  .frame[data-variant=main]{display:flex;flex-direction:column;padding:64px}
+  .cover-scale{display:flex;flex-direction:column;gap:26px;width:100%;height:100%}
+
+  /* 顶行：两个链接 + ✦ ，右侧斜切按钮 */
+  .hero-top{display:flex;align-items:center;justify-content:space-between;width:100%}
+  .hero-links{display:flex;align-items:center;gap:11px;font-size:20px;font-weight:700;color:var(--brand-blue)}
+  .hs{width:15px;height:15px;flex:0 0 auto;fill:var(--brand-pink)}
+
+  /* 斜切按钮（蓝）：顶行 + 两栏各一个 */
+  .btn-teal{
+    display:inline-flex;align-items:center;gap:9px;align-self:flex-start;
+    background:var(--brand-blue);color:#fff;
+    font-family:inherit;                               /* button 默认不继承字体 */
+    font-size:19px;font-style:italic;font-weight:700;line-height:1;
+    padding:11px 24px;
+    border:0;border-radius:0;cursor:pointer;
+    clip-path:polygon(12px 0,100% 0,calc(100% - 12px) 100%,0 100%);
+  }
+
+  /* hero：大标题 + 椭圆 */
+  /* 主标题下方额外留白：叠在 .cover-scale 的 gap:26px 上（想再松点/紧点改这个数） */
+  .hero{display:flex;align-items:center;gap:48px;width:100%;margin-bottom:32px}
+  .hero-title{
+    flex:1;min-width:0;
+    font-family:"Ahkio","Yuanti SC","Hiragino Maru Gothic ProN","PingFang SC",sans-serif;
+    font-size:60px;line-height:1.14;font-style:italic;font-weight:700;
+    letter-spacing:-.01em;color:var(--brand-blue);
+  }
+  .hero-title .reveal>span{display:inline-flex;align-items:center;gap:16px}
+  .hero-title .hs{width:26px;height:26px}
+  /* 黄高亮：抄 dbushell —— 不是 mark，是 strong 上一条 .5ex 的黄条贴底 */
+  .hero-title strong,.hero-box strong{
+    font-weight:700;
+    background:linear-gradient(var(--brand-yellow),var(--brand-yellow));
+    background-size:auto .5ex;background-position:0 calc(100% - .25ex);background-repeat:no-repeat;
+  }
+
+  /* Intro 行：左图 + 右两栏 */
+  .hero-intro{display:flex;align-items:stretch;gap:40px;width:100%}
+  .hero-boxes{flex:1;display:flex;gap:50px;min-width:0}
+  .hero-box{flex:1;min-width:0;display:flex;flex-direction:column;gap:12px}
+  .hero-box:not(:first-child){border-left:1px solid var(--brand-mint);padding-left:50px}
+  .hero-box h2{display:flex;align-items:center;gap:9px;font-size:26px;font-style:italic;font-weight:700;color:var(--brand-blue)}
+  .hero-box h2 .hs{width:17px;height:17px}
+  .hero-box p{font-size:17px;line-height:1.65;color:var(--brand-text)}
+  .hero-box .btn-teal{margin-top:auto}
+
+
+  /* ── 目录帧：规格逐项抄自 Pen 画布「屏幕 应用」(1200×720)
+       frame padding 64 / gap 32 · 分组头 42 高 · 分隔线 1px · 列表 gap 15 · 条目 50 高 ── */
+  .frame[data-variant=dir]{display:flex;flex-direction:column;gap:32px;padding:64px;background:var(--bg)}
+  .dir-head{display:flex;justify-content:space-between;align-items:flex-end;height:42px}
+  .dir-head h2{font-size:42px;font-weight:700;line-height:1;letter-spacing:0;color:var(--brand-text)}
+  .dir-count{font-family:var(--mono);font-size:16px;line-height:1;color:var(--brand-pink)}
+  .dir-rule{height:1px;background:var(--brand-mint)}
+  .dir-list{display:flex;flex-direction:column;gap:15px}
+  /* 目录条目：可点击 —— 点一下直接定位到对应作品帧 */
+  .dir-row{display:flex;flex-direction:column;gap:4px;height:50px;width:100%;
+    background:none;border:0;padding:0;margin:0;font:inherit;color:inherit;text-align:left;
+    cursor:pointer;border-radius:6px;transition:background-color .15s}
+  .dir-row:hover,.dir-row:focus-visible{background:rgba(79,69,69,.05)}
+  .dir-row:hover .dir-name,.dir-row:focus-visible .dir-name{text-decoration:underline;text-underline-offset:3px}
+  .dir-titlerow{display:flex;align-items:center;gap:8px;height:25px}
+  .dir-name{font-size:17px;font-weight:700;color:var(--brand-blue)}
+  .dir-star{font-size:11px;line-height:1;color:var(--brand-pink)}
+  .dir-meta{font-family:var(--mono);font-size:12px;color:var(--ink-60)}
+  .dir-desc{font-size:14px;color:var(--brand-text)}
+
+  /* ── 作品帧：内容块（参考 valleyfold.co.uk） ── */
+  .frame[data-variant=work]{display:flex;flex-direction:column;padding:32px}
+
+  /* 歪边框：8 点多边形，四条边中点往内凹（valleyfold 的原手法） */
+  .vf{
+    --vf-text:var(--brand-text);
+    --tape:10px;
+    /* 作品主题色：逐帧用 data-theme 覆写；胶带 / 标题 / 按钮 / 贴纸都跟着它 */
+    --theme:var(--brand-red);
+    --stripe:var(--theme);
+    --stripe-outer:linear-gradient(90deg,var(--stripe) 50%,var(--bg) 50%);
+    --stripe-inner:linear-gradient(90deg,var(--bg) 50%,var(--stripe) 50%);
+    position:relative;width:100%;flex:1;min-height:0;
+    display:flex;flex-direction:column;justify-content:center;
+    padding-block:calc(var(--tape) * 2);
+    background-color:transparent;
+    background-image:var(--stripe-outer),var(--stripe-inner),var(--stripe-inner),var(--stripe-outer);
+    background-size:20px var(--tape);
+    background-repeat:repeat-x;
+    background-position:50% 0,50% var(--tape),50% calc(100% - var(--tape)),50% 100%;
+  }
+  .vf[data-theme=blue]{--theme:var(--brand-blue)}
+  /* 胶带上的空 tag：占参考图那个 NO-AI 贴纸的位置，先不给内容 */
+  .vf-tag{
+    position:absolute;top:calc(-1 * var(--tape) - 16px);left:36px;
+    width:136px;height:56px;
+    background:#fff;border-radius:10px;
+    border:3px solid var(--theme);
+    outline:3px solid var(--theme);outline-offset:-10px;
+    transform:rotate(-4deg);
+  }
+  .vf-sheet{
+    flex:1;min-height:0;
+    display:flex;gap:44px;padding:36px 40px;
+  }
+  .vf-col{display:flex;flex-direction:column;min-width:0}
+  .vf-primary{flex:0 0 58%;justify-content:space-between}
+  .vf-head{display:flex;flex-direction:column;gap:20px}
+  .vf-secondary{flex:1;min-height:0}
+
+  /* 标题：色号 #d1364f（源码里是 oklch(var(--color-red))）
+     字体：Ahkio 是商业字体（YouWorkForThat / Mika Melvas，明确禁止第三方内嵌），
+     所以「本地装了就用，没装就退回系统圆体」；斜体是浏览器合成的。 */
+  .vf-title{
+    font-family:"Ahkio","Yuanti SC","Hiragino Maru Gothic ProN","PingFang SC",sans-serif;
+    font-size:64px;line-height:1.06;font-weight:700;font-style:italic;
+    letter-spacing:-.01em;color:var(--theme);
+  }
+
+  .vf-lead{font-size:31px;line-height:1.5;color:var(--vf-text)}
+
+  /* 斜切按钮：valleyfold 用 corner-shape:bevel，这里用 clip-path 兼容 */
+  .vf-btn{
+    display:inline-flex;align-items:center;gap:10px;align-self:flex-start;
+    background:var(--theme);color:#fff;
+    font-size:25px;font-style:italic;font-weight:700;
+    padding:12px 30px;
+    clip-path:polygon(15px 0,100% 0,calc(100% - 15px) 100%,0 100%);
+  }
+
+  /* 展示图占位（替掉原来的 ✦ 技术栈 / 状态） */
+  .vf-shot{
+    flex:1;min-height:0;
+    display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;
+    border:2px dashed rgba(79,69,69,.3);
+    border-radius:14px;
+    background:rgba(79,69,69,.035);
+  }
+  .vf-shot b{font-size:24px;font-weight:400;color:var(--vf-text)}
+  .vf-shot i{font-size:14px;font-style:normal;color:rgba(79,69,69,.55)}
+
+  /* ── 逐词升起（rauno 的 .index_clipReveal） ── */
+  .reveal{display:block;overflow:hidden}
+  .reveal>span{display:inline-block;animation:riseIn .9s cubic-bezier(.16,1,.3,1) both}
+
+  /* ── 其余帧淡入（rauno: opacity 0→1, .35s, delay .8s） ── */
+  .frame[data-variant=work]{animation:fadeIn .35s ease-in-out .8s both}
+
+  /* 封面的圆形容器入场（rauno 的 .index_mainContainer: scale 0→1） */
+  .cover-scale{animation:popIn .9s cubic-bezier(.2,1.06,.32,1) both}
+
+  /* ── 顶部小地图（rauno 的 .minimap，固定在 top:64px 居中） ── */
+  .minimap{
+    position:fixed;top:64px;left:50%;transform:translateX(-50%);
+    display:flex;align-items:flex-end;
+    gap:var(--line-gap);
+    animation:fadeIn .3s ease-in-out .8s both;
+    pointer-events:none;
+    transition:opacity .25s;
+  }
+  /* 上面那条 animation 会盖过行内 opacity，所以隐藏必须用 !important */
+  .minimap[data-shown=false]{opacity:0!important}
+  .tick{width:var(--line-w);height:var(--line-h);background:#4F45458C}
+  .tick[data-on=true]{background:var(--accent)}
+  .tracker{
+    position:absolute;top:0;left:0;
+    width:30px;height:var(--line-h);
+    border:var(--line-w) solid #4F45458C;
+    transition:background .2s ease-in-out,border-color .2s ease-in-out;
+  }
+  .tracker[data-active=true]{background:var(--accent);border-color:var(--accent)}
+
+  /* ── 十字光标（rauno 的 .index_cross: mix-blend-mode difference） ── */
+  .cross{
+    position:fixed;top:0;left:0;width:20px;height:20px;
+    margin:-10px 0 0 -10px;
+    mix-blend-mode:difference;
+    pointer-events:none;z-index:5;
+    animation:fadeIn .4s ease-in-out 1.2s both;
+  }
+  @media (pointer:coarse){.cross{display:none}}
+
+  @keyframes fadeIn{from{opacity:0}to{opacity:1}}
+  @keyframes popIn{from{transform:scale(0)}to{transform:scale(1)}}
+  @keyframes riseIn{from{transform:translateY(100%)}to{transform:translateY(0)}}
+
+  @media (prefers-reduced-motion:reduce){
+    .track,.cover-scale,.reveal>span,.frame[data-variant=work],.minimap,.cross{
+      animation-duration:.01ms!important;animation-delay:0s!important
+    }
+  }
+</style>
+<style>
+  /* 作品页专有：贴左上角的返回 */
+  .back{position:fixed;top:18px;left:18px;z-index:9;
+    font-size:13px;letter-spacing:.02em;color:var(--ink-60)}
+  .back:hover{color:var(--link)}
+</style>
+</head>
+<body>
+
+<a class="back" href="index.html">← 目录</a>
+
+<main id="root">
+  <section class="page" id="page-works">
+    <div class="strip" id="strip"></div>
+  </section>
+</main>
+
+<div class="minimap" id="minimap" aria-hidden="true">
+  <div class="tracker" id="tracker" data-active="false"></div>
+</div>
+
+<svg class="cross" id="cross" aria-hidden="true" width="20" height="20" viewBox="0 0 30 30" fill="none">
+  <line x1="14.75" y1="0" x2="14.75" y2="30" stroke="white" stroke-width="1.5"/>
+  <line y1="14.25" x2="30" y2="14.25" stroke="white" stroke-width="1.5"/>
+</svg>
+
+<script>
+/* ══════════════ 界面文案：要改字只改这一段（works.html 自己一份）══════════════ */
+window.MOCK_DATA = {
+  "site": {
+    "name": "raylic.work",
+    "tagline": "个人网站",
+    "label": "封面",
+    "docTitle": "个人网站"
+  },
+  "cover": {
+    "title": [
+      {
+        "star": false,
+        "text": "诗、风帆和大海",
+        "strong": "",
+        "delay": 0.1
+      }
+    ],
+    "boxes": [
+      {
+        "heading": "这个网站是什么",
+        "text": "我的项目存档以及介绍，以桌面端网页和移动端PWA为主，支持在线体验。",
+        "strong": "所有项目ui经过精心设计，界面美观",
+        "tail": "。",
+        "button": "开始浏览"
+      },
+      {
+        "heading": "AI+设计",
+        "text": "应用在设计时，将",
+        "strong": "大语言模型辅助操作",
+        "tail": "作为重要原则。",
+        "button": "查看目录"
+      }
+    ]
+  },
+  "ui": {
+    "openWork": "打开作品",
+    "shotTitle": "展示图",
+    "shotNote": "待放入作品截图",
+    "dirLabel": "目录",
+    "dirHeading": "作品"
+  },
+  "works": [
+    {
+      "name": "照片地图",
+      "meta": "在线 · 自托管 · 2026",
+      "href": "https://photo.raylic.work/",
+      "desc": "把照片按拍摄地钉在中国地图上，走哪儿亮哪儿"
+    },
+    {
+      "name": "拾光手帐",
+      "meta": "在线 · 自托管 · 2026",
+      "href": "https://days.raylic.work/",
+      "desc": "一天一篇，写给自己的日记"
+    },
+    {
+      "name": "喵星晴",
+      "meta": "在线 · 2026",
+      "href": "https://mood.raylic.work/",
+      "desc": "点一下心情，对方的手机就收到通知"
+    },
+    {
+      "name": "睡眠记录",
+      "meta": "在线 · 开源 · 2026",
+      "href": "https://raylic.github.io/sleep-record/",
+      "desc": "移动端睡眠追踪 PWA，离线也能记"
+    },
+    {
+      "name": "月亮",
+      "meta": "本地 · 2026",
+      "href": "",
+      "desc": "记录周期，不上传任何东西"
+    },
+    {
+      "name": "subscribe",
+      "meta": "自托管 · 2026",
+      "href": "",
+      "desc": "每天定时跑一遍订阅，把该说的合成一条推到手机"
+    },
+    {
+      "name": "ntfy",
+      "meta": "在线 · 自托管 · 2026",
+      "href": "https://ntfy.raylic.work/",
+      "desc": "自己的推送通道，不经过任何厂商"
+    },
+    {
+      "name": "服务面板",
+      "meta": "本地 · 2026",
+      "href": "",
+      "desc": "一键起停本机那些零零碎碎的服务"
+    },
+    {
+      "name": "杂志迷阅读器",
+      "meta": "本地 · 2026",
+      "href": "",
+      "desc": "把杂志扫描页读成文字，还能听"
+    },
+    {
+      "name": "厨房管家",
+      "meta": "本地 · 2026",
+      "href": "",
+      "desc": "只做餐食计划的本地应用，数据不进云"
+    },
+    {
+      "name": "Nuti",
+      "meta": "本地 · 2026",
+      "href": "",
+      "desc": "记录每天吃了什么，盯住三大营养素"
+    },
+    {
+      "name": "文章分类",
+      "meta": "实验 · 本地 · 2026",
+      "href": "",
+      "desc": "让 AI 学会我的偏好，自动给帖子分好坏"
+    },
+    {
+      "name": "文章分类 Android",
+      "meta": "实验 · 2026",
+      "href": "",
+      "desc": "上一项的 Android 稳定版，规则库的权威写入方"
+    },
+    {
+      "name": "MD 阅读器",
+      "meta": "本地 · 2026",
+      "href": "",
+      "desc": "把散落的 markdown 变成一个能读的站"
+    },
+    {
+      "name": "语音克隆朗读",
+      "meta": "Chrome 扩展 · 2026",
+      "href": "",
+      "desc": "选中网页文字，用克隆的音色念出来"
+    }
+  ]
+};
+const { site: SITE, ui: UI, works: WORKS } = window.MOCK_DATA;
+document.title = SITE.docTitle + ' · 作品';
+
+const ARROW = '<svg viewBox="0 0 24 24" width="19" height="19" aria-hidden="true" fill="currentColor"><path d="M4 10.5h12.2l-4.9-4.9L12.7 4l7 7-7 7-1.4-1.6 4.9-4.9H4z"/></svg>';
+const STAR  = '<svg class="hs" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 0l2.6 9.4L24 12l-9.4 2.6L12 24l-2.6-9.4L0 12l9.4-2.6z"/></svg>';
+
+/* 数据里的文案直接插进 innerHTML，转义一下 */
+const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;' }[c]));
+
+const FW = 1200, FH = 720;
+
+const strip   = document.getElementById('strip');
+const minimap = document.getElementById('minimap');
+const tracker = document.getElementById('tracker');
+
+/* 帧是固定 1200×720 的设计稿，按视口高等比缩 */
+function fit() {
+  document.documentElement.style.setProperty('--fit', Math.min(1, (window.innerHeight - 96) / FH).toFixed(4));
+}
+
+const cellHTML = (w, i) => {
+  const body = `
+      <div class="vf" data-theme="${i % 2 ? 'red' : 'blue'}">
+        <span class="vf-tag" aria-hidden="true"></span>
+        <div class="vf-sheet">
+          <div class="vf-col vf-primary">
+            <div class="vf-head">
+              <h2 class="vf-title">${esc(w.name)}</h2>
+              <p class="vf-lead">${esc(w.desc)}</p>
+            </div>
+            <span class="vf-btn">${UI.openWork}${ARROW}</span>
+          </div>
+          <div class="vf-col vf-secondary">
+            <div class="vf-shot"><b>${UI.shotTitle}</b><i>${UI.shotNote}</i></div>
+          </div>
+        </div>
+      </div>`;
+  return `<div class="cell">${w.href
+    ? `<a class="frame" data-variant="work" href="${esc(w.href)}" target="_blank" rel="noopener noreferrer" aria-label="${esc(w.name)}">${body}</a>`
+    : `<div class="frame" data-variant="work">${body}</div>`}</div>`;
+};
+strip.innerHTML = WORKS.map(cellHTML).join('');
+
+/* 小地图刻度：一个作品一格 */
+const ticks = [];
+WORKS.forEach(() => {
+  const d = document.createElement('i');
+  d.className = 'tick';
+  ticks.push(minimap.insertBefore(d, tracker));
+});
+
+const clamp = (v, lo, hi) => Math.min(Math.max(v, lo), hi);
+
+function onFrame() {
+  const max = strip.scrollWidth - strip.clientWidth;
+  const prog = max > 0 ? clamp(strip.scrollLeft / max, 0, 1) : 0;
+  const span = minimap.scrollWidth - tracker.offsetWidth;
+  tracker.style.transform = `translateX(${prog * span}px)`;
+  tracker.dataset.active = 'true';
+  const cur = Math.round(prog * (ticks.length - 1));
+  ticks.forEach((d, i) => { d.dataset.on = String(i === cur); });
+}
+
+/* 十字光标跟手 */
+const cross = document.getElementById('cross');
+window.addEventListener('pointermove', e => {
+  cross.style.transform = `translate(${e.clientX}px,${e.clientY}px)`;
+}, { passive:true });
+
+/* 从 index.html 的目录带 #w3 进来 → 直接定位到那一个 */
+function fromHash() {
+  const m = /^#w(\d+)$/.exec(location.hash);
+  if (!m) return false;
+  strip.scrollLeft = Math.min(WORKS.length - 1, Number(m[1])) * strip.clientWidth;
+  return true;
+}
+
+window.addEventListener('hashchange', fromHash);
+window.addEventListener('resize', () => { fit(); onFrame(); });
+strip.addEventListener('scroll', onFrame, { passive:true });
+
+if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
+fit();
+if (!fromHash()) strip.scrollLeft = 0;
+onFrame();
+</script>
+</body>
+</html>

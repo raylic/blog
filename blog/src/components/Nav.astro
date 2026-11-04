@@ -1,0 +1,55 @@
+---
+// 侧栏导航：文章列表 / 标签
+const links = [
+  { label: '文章列表', href: '/' },
+  { label: '标签', href: '/tags' },
+];
+const current = Astro.url.pathname.replace(/\/+$/, '') || '/';
+// 「文章列表」在首页和归档页都算当前（/archive 不再有导航入口，但直接访问仍高亮）
+function isActive(href: string): boolean {
+  if (href === '/') return current === '/' || current === '/archive';
+  return current === href || current.startsWith(href + '/');
+}
+---
+
+<nav class="nav">
+  {links.map((l) => {
+    const active = isActive(l.href);
+    return (
+      <a class={active ? 'nav-link active' : 'nav-link'} href={l.href}>
+        {l.label}
+      </a>
+    );
+  })}
+</nav>
+
+<style>
+  .nav {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--nav-gap);
+    padding-top: var(--nav-pad-top);
+    width: var(--nav-w);
+    flex-shrink: 0;
+  }
+  .nav-link {
+    font-size: var(--fs-nav);
+    color: var(--c-nav-dim);
+    text-decoration: none;
+    letter-spacing: 0.5px;
+    line-height: 1.4;
+  }
+  .nav-link:hover { text-decoration: underline; text-underline-offset: 3px; }
+  .nav-link.active { color: var(--c-nav); }
+  @media (max-width: 760px) {
+    .nav {
+      flex-direction: row;
+      align-items: center;
+      width: 100%;
+      flex-wrap: wrap;
+      gap: 14px 20px;
+      padding-top: 0;
+    }
+  }
+</style>

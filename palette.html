@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<title>作品帧 · 主题色候选</title>
+<!--
+  临时对照页，看完可以删。
+  胶带配方 / 字体 / 按钮形态全部照抄 index.html 里的 .vf，只把 --theme 换掉，
+  底色也用 index.html 的 --bg，所以这里的观感就是作品帧的真实观感。
+-->
+<style>
+:root{
+  --bg:#FCF8EE;
+  --brand-text:#4f4545;
+  --brand-yellow:#fffabe;
+}
+*{box-sizing:border-box}
+body{margin:0;padding:40px 32px 80px;background:var(--bg);
+  font-family:"Noto Sans SC","PingFang SC","Hiragino Sans GB",sans-serif;color:var(--brand-text)}
+h1{font-size:22px;margin:0 0 6px}
+p.lead{margin:0 0 36px;font-size:14px;opacity:.75;line-height:1.7}
+h2{font-size:14px;letter-spacing:.08em;margin:44px 0 18px;text-transform:uppercase;opacity:.6}
+
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:26px}
+
+/* 一张卡 = 一个候选色，套 true 的 .vf 视觉 */
+.card{
+  --theme:#000;
+  --tape:10px;
+  --stripe:var(--theme);
+  --stripe-outer:linear-gradient(90deg,var(--stripe) 50%,var(--bg) 50%);
+  --stripe-inner:linear-gradient(90deg,var(--bg) 50%,var(--stripe) 50%);
+  position:relative;height:250px;padding:calc(var(--tape)*2);
+  display:flex;flex-direction:column;justify-content:center;
+  background-image:var(--stripe-outer),var(--stripe-inner),var(--stripe-inner),var(--stripe-outer);
+  background-size:20px var(--tape);background-repeat:repeat-x;
+  background-position:50% 0,50% var(--tape),50% calc(100% - var(--tape)),50% 100%;
+}
+/* 空贴纸 */
+.tag{position:absolute;top:calc(-1*var(--tape) - 16px);left:26px;width:96px;height:40px;
+  background:#fff;border-radius:10px;border:3px solid var(--theme);outline:3px solid var(--theme);outline-offset:-10px}
+/* 标题：照 .vf-title 的字体和斜体，尺寸缩到 34px 好排 */
+.title{font-size:34px;font-style:italic;font-weight:700;letter-spacing:-.01em;line-height:1.06;
+  color:var(--theme);margin:0}
+.meta{display:flex;align-items:center;gap:12px;margin-top:16px}
+/* 斜切按钮 */
+.btn{position:relative;display:inline-flex;align-items:center;background:var(--theme);color:#fff;
+  font-size:15px;font-style:italic;font-weight:700;line-height:1;padding:9px 18px;
+  clip-path:polygon(10px 0,100% 0,calc(100% - 10px) 100%,0 100%)}
+.hex{font:12px/1 ui-monospace,SFMono-Regular,Menlo,monospace;opacity:.55}
+.name{font-size:13px;opacity:.75}
+.cap{font-size:13px;line-height:1.6;margin-top:12px;opacity:.8}
+.cap b{font-weight:700}
+
+/* 成对预览 */
+.pair{display:flex;gap:0;height:200px;margin-bottom:30px;border-radius:2px;overflow:hidden}
+.pair .card{flex:1;height:200px;padding:calc(var(--tape)*2) 20px}
+.pair .title{font-size:26px}
+.pair-label{font-size:13px;opacity:.7;margin:0 0 10px}
+</style>
+</head>
+<body>
+
+<h1>作品帧 · 主题色候选</h1>
+<p class="lead">
+  每个色卡里的胶带 / 标题 / 按钮 / 贴纸都是照 <code>index.html</code> 里 <code>.vf</code> 的真实配方画的（只把标题从 64px 缩到 34px）。
+  底色用的是同一个 <code>--bg</code>，所以这里的观感就是作品帧的观感。<br>
+  换色只需改 <code>index.html</code> 里 <code>--brand-red</code> / <code>--brand-blue</code> 两个变量。
+</p>
+
+<h2>单个颜色</h2>
+<div class="grid" id="singles"></div>
+
+<h2>成对搭配（当前是逐帧交替，所以要看两个一起）</h2>
+<div id="pairs"></div>
+
+<script>
+const CANDS = [
+  { hex:'#d1364f', name:'红', src:'dbushell --color-red', note:'<b>现用</b>。默认主题色，暖、饱和，在米底上很稳。' },
+  { hex:'#0096be', name:'蓝', src:'dbushell --color-blue', note:'<b>现用</b>。也是封面主色，所以作品帧和封面是同一套色。' },
+  { hex:'#ff5f78', name:'粉', src:'dbushell --color-pink', note:'和红同族但更亮。跟深蓝配对时撞色最好看；单独用会有点甜。' },
+  { hex:'#0f6e9b', name:'深蓝', src:'dbushell --color-dark-blue', note:'比现用的蓝更深，白字按钮的对比更强，跟粉 / 橙红都搭。' },
+  { hex:'#f45a27', name:'橙红', src:'valleyfold --color-vf-orange', note:'第一版用过（后来换成 dbushell 红）。暖、有手工感，跟砖红是一对。' },
+  { hex:'#b14833', name:'砖红', src:'valleyfold --color-vf-brown', note:'第一版用过。最“纸感”的一档，跟米底最和，也最低调。' },
+  { hex:'#257f3d', name:'墨绿', src:'valleyfold --color-vf-green', note:'唯一的绿。冷档，当对照组用不错（配砖红 / 橙红）。' },
+  { hex:'#606870', name:'石板灰蓝', src:'Daring Fireball 的 hover 底色', note:'最“低存在感”的一档 —— 不抢内容，但整页会偏冷、偏板。' },
+];
+
+const PAIRS = [
+  { a:'#d1364f', b:'#0096be', label:'① 现状：红 + 蓝（dbushell 原配）' },
+  { a:'#b14833', b:'#f45a27', label:'② 暖色对：砖红 + 橙红（第一版那套，最“纸感”）' },
+  { a:'#0f6e9b', b:'#ff5f78', label:'③ 冷 + 粉：深蓝 + 粉（对比最强）' },
+  { a:'#257f3d', b:'#b14833', label:'④ 复古对：墨绿 + 砖红' },
+  { a:'#606870', b:'#0f6e9b', label:'⑤ 低存在感：石板灰蓝 + 深蓝' },
+];
+
+const esc = s => String(s).replace(/[&<>]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));
+const card = (hex, title, sub) => `
+  <div class="card" style="--theme:${hex}">
+    <span class="tag"></span>
+    <h3 class="title">${esc(title)}</h3>
+    <div class="meta">
+      <span class="btn">打开作品 ›</span>
+      <span class="hex">${hex}</span>
+      <span class="name">${esc(sub || '')}</span>
+    </div>
+  </div>`;
+
+document.getElementById('singles').innerHTML = CANDS.map(c =>
+  card(c.hex, c.name, c.src) + `<p class="cap"><b>${c.name}</b> · ${esc(c.src)}<br>${c.note}</p>`
+).join('');
+
+document.getElementById('pairs').innerHTML = PAIRS.map(p => `
+  <p class="pair-label">${esc(p.label)}</p>
+  <div class="pair">
+    ${card(p.a, '照片地图', p.a)}
+    ${card(p.b, '拾光手帐', p.b)}
+  </div>`).join('');
+</script>
+</body>
+</html>

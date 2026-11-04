@@ -1,0 +1,130 @@
+{
+  "site": {
+    "name": "raylic.work",
+    "tagline": "个人项目目录",
+    "label": "封面",
+    "docTitle": "个人项目目录"
+  },
+  "cover": {
+    "title": [
+      {
+        "star": true,
+        "text": "在AI时代，",
+        "strong": "探寻真实的自我",
+        "delay": 0.1
+      }
+    ],
+    "boxes": [
+      {
+        "heading": "目录里有什么",
+        "text": "以桌面端网页和移动端PWA为主的项目说明及截图，大部分可在线使用",
+        "strong": "所有项目ui经过精心设计，界面美观",
+        "tail": "。",
+        "button": "开始浏览"
+      },
+      {
+        "heading": "本地优先原则",
+        "text": "所有的设计都旨在将数据保存在本地，数据的归属权归用户",
+
+        "button": "了解更多"
+      }
+    ]
+  },
+  "ui": {
+    "openWork": "打开作品",
+    "shotTitle": "展示图",
+    "shotNote": "待放入作品截图"
+  },
+  "works": [
+    {
+      "name": "照片地图",
+      "meta": "在线 · 自托管 · 2026",
+      "href": "https://photo.raylic.work/",
+      "desc": "把照片按拍摄地钉在中国地图上，走哪儿亮哪儿"
+    },
+    {
+      "name": "拾光手帐",
+      "meta": "在线 · 自托管 · 2026",
+      "href": "https://days.raylic.work/",
+      "desc": "一天一篇，写给自己的日记"
+    },
+    {
+      "name": "喵星晴",
+      "meta": "在线 · 2026",
+      "href": "https://mood.raylic.work/",
+      "desc": "点一下心情，对方的手机就收到通知"
+    },
+    {
+      "name": "睡眠记录",
+      "meta": "在线 · 开源 · 2026",
+      "href": "https://raylic.github.io/sleep-record/",
+      "desc": "移动端睡眠追踪 PWA，离线也能记"
+    },
+    {
+      "name": "月亮",
+      "meta": "本地 · 2026",
+      "href": "",
+      "desc": "记录周期，不上传任何东西"
+    },
+    {
+      "name": "subscribe",
+      "meta": "自托管 · 2026",
+      "href": "",
+      "desc": "每天定时跑一遍订阅，把该说的合成一条推到手机"
+    },
+    {
+      "name": "ntfy",
+      "meta": "在线 · 自托管 · 2026",
+      "href": "https://ntfy.raylic.work/",
+      "desc": "自己的推送通道，不经过任何厂商"
+    },
+    {
+      "name": "服务面板",
+      "meta": "本地 · 2026",
+      "href": "",
+      "desc": "一键起停本机那些零零碎碎的服务"
+    },
+    {
+      "name": "杂志迷阅读器",
+      "meta": "本地 · 2026",
+      "href": "",
+      "desc": "把杂志扫描页读成文字，还能听"
+    },
+    {
+      "name": "厨房管家",
+      "meta": "本地 · 2026",
+      "href": "",
+      "desc": "只做餐食计划的本地应用，数据不进云"
+    },
+    {
+      "name": "Nuti",
+      "meta": "本地 · 2026",
+      "href": "",
+      "desc": "记录每天吃了什么，盯住三大营养素"
+    },
+    {
+      "name": "文章分类",
+      "meta": "实验 · 本地 · 2026",
+      "href": "",
+      "desc": "让 AI 学会我的偏好，自动给帖子分好坏"
+    },
+    {
+      "name": "文章分类 Android",
+      "meta": "实验 · 2026",
+      "href": "",
+      "desc": "上一项的 Android 稳定版，规则库的权威写入方"
+    },
+    {
+      "name": "MD 阅读器",
+      "meta": "本地 · 2026",
+      "href": "",
+      "desc": "把散落的 markdown 变成一个能读的站"
+    },
+    {
+      "name": "语音克隆朗读",
+      "meta": "Chrome 扩展 · 2026",
+      "href": "",
+      "desc": "选中网页文字，用克隆的音色念出来"
+    }
+  ]
+}

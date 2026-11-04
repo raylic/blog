@@ -1,0 +1,27 @@
+---
+import { getCollection } from 'astro:content';
+import List from '../layouts/List.astro';
+import PostCard from '../components/PostCard.astro';
+import { groupByMonth, pinnedPosts, sortDesc } from '../lib/posts';
+
+const all = (await getCollection('posts', ({ data }) => !data.draft)).filter(Boolean);
+const pinned = pinnedPosts(all);
+const rest = all.filter((p) => !p.data.pinned);
+const posts = sortDesc(rest).slice(0, 15);
+const groups = groupByMonth(posts);
+---
+
+<List title="首页" description="写作 · 项目 · 笔记">
+  {pinned.length > 0 && (
+    <section class="month">
+      <div class="month-label">置顶</div>
+      {pinned.map((p) => <PostCard post={p} />)}
+    </section>
+  )}
+  {groups.map((g) => (
+    <section class="month">
+      <div class="month-label">{g.label}</div>
+      {g.posts.map((p) => <PostCard post={p} />)}
+    </section>
+  ))}
+</List>

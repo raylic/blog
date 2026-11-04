@@ -1,0 +1,13 @@
+# 依赖
+node_modules/
+
+# 构建产物（Cloudflare Pages 在云上构建，本地产物不进版本库）
+blog/dist/
+blog/.astro/
+
+# 系统与编辑器杂物
+.DS_Store
+*.log
+*.swp
+
+# 注意：blog/public/uploads/ 是后台贴进文章的图，属于内容，必须提交

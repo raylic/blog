@@ -1,0 +1,79 @@
+---
+import { render } from 'astro:content';
+import type { CollectionEntry, MarkdownHeading } from 'astro:content';
+import Base from './Base.astro';
+import { prevNext, slug } from '../lib/posts';
+import type { Post } from '../lib/posts';
+
+interface Props {
+  post: CollectionEntry<'posts'>;
+  allPosts: Post[];
+}
+
+const { post, allPosts } = Astro.props;
+const { Content, headings } = await render(post);
+// 只用 render() 自带的 headings（depth 2/3），不再正则解析 HTML
+const toc = headings
+  .filter((h: MarkdownHeading) => h.depth === 2 || h.depth === 3)
+  .map((h: MarkdownHeading) => ({ level: h.depth as 2 | 3, text: h.text, slug: h.slug }));
+const { prev, next } = prevNext(allPosts, post);
+const date = new Date(post.data.date).toLocaleDateString('en-CA');
+---
+
+<Base title={post.data.title} description={post.data.description} footer="article">
+  <div class="shell">
+    <div class="back-bar">
+      <a class="back-link" href="/">← 返回</a>
+    </div>
+    <div class="article-content">
+      <article class="article-body">
+        <h1 class="article-title">{post.data.title}</h1>
+        <div class="article-meta">
+          <div class="article-date">{date}</div>
+        </div>
+        <div class="prose">
+          <Content />
+        </div>
+
+        {post.data.tags.length > 0 && (
+          <div class="tags">
+            <span class="tag-label">标签</span>
+            {post.data.tags.map((t) => (
+              <a class="tag-link" href={`/tags/${encodeURIComponent(t)}`}>{t}</a>
+            ))}
+          </div>
+        )}
+
+        <div class="pn">
+          <div class="pn-item">
+            <span class="pn-label">上一篇</span>
+            {prev ? (
+              <a class="pn-link" href={`/posts/${slug(prev)}`}>{prev.data.title}</a>
+            ) : (
+              <span class="pn-empty">（没有更早的文章）</span>
+            )}
+          </div>
+          <div class="pn-item next">
+            <span class="pn-label">下一篇</span>
+            {next ? (
+              <a class="pn-link" href={`/posts/${slug(next)}`}>{next.data.title}</a>
+            ) : (
+              <span class="pn-empty">（没有更晚的文章）</span>
+            )}
+          </div>
+        </div>
+      </article>
+
+      {toc.length > 0 && (
+        <aside class="toc">
+          <span class="toc-label">目录</span>
+          {toc.map((t) => (
+            <a class={`toc-item ${t.level === 3 ? 'h3' : ''}`} href={`#${t.slug}`}>
+              {t.text}
+            </a>
+          ))}
+        </aside>
+      )}
+    </div>
+  </div>
+</Base>

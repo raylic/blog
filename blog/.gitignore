@@ -1,0 +1,12 @@
+# 依赖
+node_modules/
+
+# 构建产物（由 npm run build 生成，不进版本库）
+dist/
+.astro/
+
+# 系统 / 编辑器杂物
+.DS_Store
+*.log
+
+# 说明：public/uploads/ 是后台传的图，属于内容，必须提交，不要忽略

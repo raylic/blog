@@ -1,0 +1,30 @@
+---
+import { render } from 'astro:content';
+import type { CollectionEntry } from 'astro:content';
+import { slug } from '../lib/posts';
+
+interface Props {
+  post: CollectionEntry<'posts'>;
+  showSummary?: boolean;
+}
+
+const { post, showSummary = true } = Astro.props;
+const { Content } = await render(post);
+const summary = post.data.description ?? summarize(post);
+
+function summarize(p: CollectionEntry<'posts'>): string {
+  // 无 description 时取正文前 80 字
+  return (p.body ?? '').replace(/[#*`>\-\[\]]/g, '').slice(0, 80).trim();
+}
+---
+
+<article class="post">
+  <div class="title-row">
+    <a class="post-title" href={`/posts/${slug(post)}`}>{post.data.title}</a>
+    {post.data.pinned && (
+      <span class="star" title="置顶" aria-label="置顶">★</span>
+    )}
+  </div>
+  <div class="dateline">{new Date(post.data.date).toLocaleDateString('en-CA')}</div>
+  {showSummary && <p class="summary">{summary}</p>}
+</article>

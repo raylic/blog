@@ -1,0 +1,24 @@
+---
+import { getCollection } from 'astro:content';
+import List from '../../layouts/List.astro';
+import PostCard from '../../components/PostCard.astro';
+import { sortDesc } from '../../lib/posts';
+
+export async function getStaticPaths() {
+  const all = (await getCollection('posts', ({ data }) => !data.draft)).filter(Boolean);
+  const tags = new Set<string>();
+  for (const p of all) for (const t of p.data.tags) tags.add(t);
+  return [...tags].map((tag) => ({ params: { tag } }));
+}
+
+const { tag } = Astro.params;
+const all = (await getCollection('posts', ({ data }) => !data.draft)).filter(Boolean);
+const posts = sortDesc(all.filter((p) => p.data.tags.includes(tag)));
+---
+
+<List title={`标签：${tag}`} description={`包含「${tag}」的文章`}>
+  <div class="month">
+    <div class="month-label">标签 · {tag}（{posts.length}）</div>
+    {posts.map((p) => <PostCard post={p} />)}
+  </div>
+</List>

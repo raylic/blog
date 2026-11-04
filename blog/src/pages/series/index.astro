@@ -1,0 +1,27 @@
+---
+import { getCollection } from 'astro:content';
+import List from '../../layouts/List.astro';
+import PostCard from '../../components/PostCard.astro';
+import { seriesList } from '../../lib/posts';
+
+const all = (await getCollection('posts', ({ data }) => !data.draft)).filter(Boolean);
+const series = seriesList(all);
+---
+
+<List title="系列" description="成组的文章系列">
+  {series.map((s) => (
+    <section class="month">
+      <div class="month-label">
+        <a class="series-link" href={`/series/${encodeURIComponent(s.slug)}`}>
+          {s.slug}（{s.posts.length}）
+        </a>
+      </div>
+      {s.posts.map((p) => <PostCard post={p} />)}
+    </section>
+  ))}
+</List>
+
+<style>
+  .series-link { color: var(--c-month); text-decoration: none; letter-spacing: var(--ls-label); }
+  .series-link:hover { text-decoration: underline; }
+</style>

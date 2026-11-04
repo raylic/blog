@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="zh-CN"><head><meta charset="utf-8">
+<title>index.html · 暗色色板</title>
+<style>
+  body{margin:0;padding:36px 32px 72px;background:#FCF8EE;
+    font-family:"Noto Sans SC","PingFang SC",sans-serif;color:#4f4545;line-height:1.6}
+  h1{font-size:20px;margin:0 0 6px} p.lead{margin:0 0 32px;font-size:13px;opacity:.7;max-width:760px}
+  h2{font-size:13px;letter-spacing:.14em;text-transform:uppercase;opacity:.55;margin:40px 0 14px}
+  table{border-collapse:collapse;width:100%;max-width:900px;font-size:13px}
+  td{padding:7px 10px 7px 0;vertical-align:middle;border-bottom:1px solid #00000010}
+  td.n{font-family:ui-monospace,Menlo,monospace;font-size:12px;white-space:nowrap}
+  td.d{font-size:12px;opacity:.6;max-width:230px}
+  td.sw span{display:inline-block;width:34px;height:20px;border-radius:4px;
+    border:1px solid #00000022;vertical-align:middle;margin-right:9px}
+  td.sw code{font-family:ui-monospace,Menlo,monospace;font-size:11px;opacity:.8}
+  .ramp{display:flex;gap:10px;flex-wrap:wrap}
+  .step{text-align:center}
+  .step span{display:block;width:104px;height:60px;border-radius:8px;border:1px solid #00000022}
+  .step code{font-size:10px;font-family:ui-monospace,Menlo,monospace;opacity:.7;line-height:1.5}
+
+  /* 暗底上的实景样例 */
+  .demo{background:#10171d;color:#eeeeee;border-radius:12px;padding:32px 34px;max-width:640px}
+  .demo .tag{display:inline-block;background:#1e252c;border:2px solid #ff6879;
+    border-radius:6px;width:64px;height:26px}
+  .demo h3{font-size:34px;font-style:italic;margin:14px 0 10px;color:#4bc0ea}
+  .demo p{font-size:14px;margin:0 0 16px;color:#eeeeee}
+  .demo strong{background:linear-gradient(#fdf8bc,#fdf8bc);
+    background-size:auto .5ex;background-position:0 calc(100% - .25ex);background-repeat:no-repeat}
+  .demo a{color:#4bc0ea;text-decoration:none;border-bottom:1px solid #98e8ca}
+  .demo .btn{display:inline-block;background:#4bc0ea;color:#fff;font-size:14px;font-weight:700;
+    font-style:italic;padding:9px 18px;clip-path:polygon(10px 0,100% 0,calc(100% - 10px) 100%,0 100%)}
+  .demo hr{border:0;border-top:1px solid #98e8ca;margin:22px 0}
+  .tape{height:10px;background:
+    repeating-linear-gradient(90deg,#ff6879 0 10px,#10171d 10px 20px)}
+</style></head><body>
+
+<h1>index.html · 暗色色板</h1>
+<p class="lead">
+  暗色的推法：<b>保留 dbushell 那套 oklch 的色相和彩度，只把明度抬上去</b>；底/面从 DF 的
+  <code>#4a525a</code> 按同色相推导出板岩阶（第 4 级就是 DF 原值）。所以没有一个颜色是拍脑袋编的。
+</p>
+
+<h2>颜色对照</h2>
+<table><tr><td class="n">变量</td><td class="d">用途</td><td class="d">现在的亮色</td><td class="d">暗色</td></tr><tr><td class="n">--bg</td><td class="d">画布底</td><td class="sw"><span style="background:#FCF8EE"></span><code>#FCF8EE</code></td><td class="sw"><span style="background:#10171d"></span><code>#10171d</code></td></tr><tr><td class="n">--paper</td><td class="d">帧底</td><td class="sw"><span style="background:#FFFFFF"></span><code>#FFFFFF</code></td><td class="sw"><span style="background:#1e252c"></span><code>#1e252c</code></td></tr><tr><td class="n">--slate-600</td><td class="d">DF 的 body 色（基准）</td><td class="sw"><span style="background:#4a525a"></span><code>#4a525a</code></td><td class="sw"><span style="background:#4a525a"></span><code>#4a525a</code></td></tr><tr><td class="n">--ink</td><td class="d">正文</td><td class="sw"><span style="background:#4F4545"></span><code>#4F4545</code></td><td class="sw"><span style="background:#eeeeee"></span><code>#eeeeee</code></td></tr><tr><td class="n">--ink-60</td><td class="d">次级文字</td><td class="sw"><span style="background:#4F4545A6"></span><code>#4F4545A6</code></td><td class="sw"><span style="background:#eeeeeea6"></span><code>#eeeeeea6</code></td></tr><tr><td class="n">--ink-08</td><td class="d">极浅底</td><td class="sw"><span style="background:#4F45450A"></span><code>#4F45450A</code></td><td class="sw"><span style="background:#eeeeee14"></span><code>#eeeeee14</code></td></tr><tr><td class="n">--link</td><td class="d">链接 / 主色</td><td class="sw"><span style="background:#0096BE"></span><code>#0096BE</code></td><td class="sw"><span style="background:#4bc0ea"></span><code>#4bc0ea</code></td></tr><tr><td class="n">--accent</td><td class="d">强调</td><td class="sw"><span style="background:#FF5F78"></span><code>#FF5F78</code></td><td class="sw"><span style="background:#ff7a90"></span><code>#ff7a90</code></td></tr><tr><td class="n">--line</td><td class="d">分隔线</td><td class="sw"><span style="background:#96E6C8"></span><code>#96E6C8</code></td><td class="sw"><span style="background:#98e8ca"></span><code>#98e8ca</code></td></tr><tr><td class="n">--brand-text</td><td class="d">作品帧正文</td><td class="sw"><span style="background:#4f4545"></span><code>#4f4545</code></td><td class="sw"><span style="background:#eeeeee"></span><code>#eeeeee</code></td></tr><tr><td class="n">--brand-red</td><td class="d">作品帧主题色 A（胶带/标题/按钮）</td><td class="sw"><span style="background:#d1364f"></span><code>#d1364f</code></td><td class="sw"><span style="background:#ff6879"></span><code>#ff6879</code></td></tr><tr><td class="n">--brand-blue</td><td class="d">作品帧主题色 B</td><td class="sw"><span style="background:#0096be"></span><code>#0096be</code></td><td class="sw"><span style="background:#4bc0ea"></span><code>#4bc0ea</code></td></tr><tr><td class="n">--brand-yellow</td><td class="d">strong 黄条</td><td class="sw"><span style="background:#fffabe"></span><code>#fffabe</code></td><td class="sw"><span style="background:#fdf8bc"></span><code>#fdf8bc</code></td></tr><tr><td class="n">--brand-pink</td><td class="d">星号 / 计数</td><td class="sw"><span style="background:#ff5f78"></span><code>#ff5f78</code></td><td class="sw"><span style="background:#ff7a90"></span><code>#ff7a90</code></td></tr><tr><td class="n">--brand-mint</td><td class="d">分隔线</td><td class="sw"><span style="background:#96e6c8"></span><code>#96e6c8</code></td><td class="sw"><span style="background:#98e8ca"></span><code>#98e8ca</code></td></tr></table>
+
+<h2>板岩阶（从 DF 的 #4a525a 推）</h2>
+<div class="ramp"><div class="step"><span style="background:#10171d"></span><code>--slate-900<br>#10171d</code></div><div class="step"><span style="background:#1e252c"></span><code>--slate-800<br>#1e252c</code></div><div class="step"><span style="background:#2c343b"></span><code>--slate-700<br>#2c343b</code></div><div class="step"><span style="background:#4a525a"></span><code>--slate-600<br>#4a525a</code></div><div class="step"><span style="background:#626a72"></span><code>--slate-500<br>#626a72</code></div><div class="step"><span style="background:#848d96"></span><code>--slate-400<br>#848d96</code></div></div>
+
+<h2>暗底上的实景（照封面帧的元素摆的）</h2>
+<div class="demo">
+  <div class="tape"></div>
+  <div class="tag"></div>
+  <h3>在AI时代，<strong>探寻真实的自我</strong></h3>
+  <p>以桌面端网页和移动端 PWA 为主的项目说明及截图，大部分可在线使用。</p>
+  <a href="#">查看目录 →</a>
+  <div style="margin-top:16px"><span class="btn">开始浏览 →</span></div>
+  <hr>
+  <p style="font-size:13px;opacity:.7">分隔线用 --line，正文用 --brand-text，链接用 --link。</p>
+</div>
+</body></html>

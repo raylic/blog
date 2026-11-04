@@ -1,0 +1,35 @@
+---
+import { getCollection } from 'astro:content';
+import List from '../../layouts/List.astro';
+import { tagCounts } from '../../lib/posts';
+
+const all = (await getCollection('posts', ({ data }) => !data.draft)).filter(Boolean);
+const tags = tagCounts(all);
+---
+
+<List title="标签" description="按标签浏览文章">
+  <div class="tag-list">
+    {tags.map(({ tag, count }) => (
+      <a class="tag-line" href={`/tags/${encodeURIComponent(tag)}`}>
+        <span class="tag-name">{tag}</span>
+        <span class="tag-count">{count}</span>
+      </a>
+    ))}
+  </div>
+</List>
+
+<style>
+  .tag-list { display: flex; flex-direction: column; gap: 14px; padding-top: 24px; }
+  .tag-line {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    color: var(--c-ink);
+    text-decoration: none;
+    border-bottom: 1px solid #565e66;
+    padding-bottom: 10px;
+  }
+  .tag-line:hover { text-decoration: underline; }
+  .tag-name { font-size: 16px; }
+  .tag-count { font-family: 'Lato', var(--f-sans); font-size: 13px; color: var(--c-date); }
+</style>

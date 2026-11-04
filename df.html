@@ -1,0 +1,266 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title></title>
+<!--
+  第二版：完全复刻 daringfireball.net
+  数值逐条抄自它的 /css/fireball_screen.css（脚本比对的，不是凭记忆）。
+  只做了这些必要偏离，全部在下面对应处标了 [偏离]：
+    1. 字体栈加中文回退（Verdana 没有汉字）
+    2. #Banner 里放的是字标不是他的星标图形 → 去掉 line-height:0（那是给 <img> 的）
+    3. 版式含 logo 全部没搬 DF 的资产
+-->
+<style>
+/* ═══ DF body ═══ */
+body{
+  -webkit-text-size-adjust:none;
+  margin:0;padding:0;
+  font-family:Verdana,system-ui,"PingFang SC","Hiragino Sans GB",Helvetica,sans-serif;  /* [偏离] 加中文回退 */
+  line-height:1.8em;color:#fff;text-align:left;
+  min-width:760px;
+  background-color:#4a525a;
+}
+
+/* ═══ DF 链接：浅灰字 + 1px 下边框（visited 转虚线），hover 白字 + #606870 底 ═══ */
+a{text-decoration:none}
+a:link{color:#ddd;border-color:#888;border-width:0 0 1px 0;border-style:none none solid none;padding:3px 0 2px;background-color:inherit}
+a:visited{color:#ddd;border-color:#999;border-width:0 0 1px 0;border-style:none none dotted none;padding:3px 0 2px;background-color:inherit}
+a:hover{color:#fff;background-color:#606870;border-color:#606870}
+
+/* ═══ DF #Box：720px 居中；侧栏用 -222px 挂到盒子左边 ═══ */
+#Box{border:0;width:720px;height:auto;margin:0 auto;padding:0;text-align:left}
+/* 注意：#Box 不能加 position:relative —— #Banner 的 margin-top:59px 会穿透 #Box 向上塌陷，
+   把整个盒子推下 59px；DF 的两个样式表都没给 #Box 定位，侧栏 top 是相对视口算的。 */
+#Banner{width:300px;height:auto;border:0;padding:0;margin:59px 12px 69px 41px;text-align:left;background-color:transparent}
+#Main{padding:0;border:0;position:relative;margin:0 0 0 222px;width:425px}
+#Sidebar{
+  position:absolute;top:189px;margin:0;width:160px;height:auto;border:0;      /* 来自 /css/ie_sucks.php：top:189px; margin:0 —— 它盖掉了 fireball_screen.css 里的 top:191px 和 margin-left:-222px */
+  padding:5px 0 0 0;background-color:transparent;color:#eee;text-align:right;line-height:1em;
+  font-family:"Gill Sans MT","Gill Sans","Gill Sans Std",Verdana,"Bitstream Vera Sans",sans-serif;
+}
+#Sidebar ul{margin:0 0 5em -4em;padding:0;list-style:none}
+#Sidebar li{list-style:none;letter-spacing:2px;text-transform:uppercase;margin:0 0 1em 0;padding:0}
+#Sidebar a{color:#eee;padding:4px 1px;text-decoration:none}
+#Sidebar a:link,#Sidebar a:visited{color:#eee;border:0}
+#Sidebar a:hover{color:#fff}
+
+/* ═══ 标题：DF h1 / h2 / h3 原值 ═══ */
+h1{font-family:"Gill Sans MT","Gill Sans","Gill Sans Std",Georgia,serif;font-size:1.55em;line-height:1.3em;text-align:left;font-weight:normal;margin:0 0 1.25em 0}
+h2{font-family:"Gill Sans MT","Gill Sans","Gill Sans Std",Verdana,"Bitstream Vera Sans",sans-serif;font-size:1.05em;text-align:left;font-weight:normal;line-height:1.8em;letter-spacing:.2em;margin:4em 0 1em 0;text-transform:uppercase}
+h3{font-family:"Gill Sans MT","Gill Sans","Gill Sans Std",Verdana,"Bitstream Vera Sans",sans-serif;font-size:.91em;text-align:left;font-weight:normal;line-height:1.8em;letter-spacing:.2em;margin-bottom:1.4em;margin-top:3em;text-transform:uppercase}
+
+/* ═══ Banner 字标：借 DF 的 h1（名字）/ h3（副题）规格，不自己编数值 ═══ */
+#Banner .banner-name{margin:0;font-family:"Gill Sans MT","Gill Sans","Gill Sans Std",Georgia,serif;font-size:1.55em;font-weight:normal;line-height:1.3em;color:#eee}
+#Banner .banner-tag{margin:.8em 0 0;font-family:"Gill Sans MT","Gill Sans","Gill Sans Std",Verdana,sans-serif;font-size:.91em;font-weight:normal;line-height:1.8em;letter-spacing:.2em;text-transform:uppercase;color:#aaa}
+
+/* ═══ DF .linkedlist ═══ */
+.linkedlist{color:#eee;border-width:0;border-style:solid;border-color:#666;padding-bottom:0;margin:0}
+.linkedlist dt{
+  margin-bottom:1em;margin-top:2em;
+  font-family:"Gill Sans MT","Gill Sans","Gill Sans Std",Verdana,"Bitstream Vera Sans",sans-serif;
+  letter-spacing:.15em;text-transform:uppercase;font-weight:normal;font-size:1.05em;
+}
+.linkedlist dt a{padding-top:2px;padding-bottom:0;color:#ccc}
+.linkedlist dt a:link{border-style:solid;border-color:#72767A}
+.linkedlist dt a:visited{border-style:dotted;border-color:#72767A}
+.linkedlist dd{margin:auto auto 5em 0}
+.linkedlist p{margin:0 0 1.6em 0}
+
+/* DF a.permalink（那个 ★ = U+2605）。我们没有详情页，所以它是 span，不是假链接 */
+.permalink{color:#bbb;border:0;padding:3px 3px 3px 5px;margin-left:.5em;
+  font-family:"Hiragino Kaku Gothic Pro","Osaka","Zapf Dingbats"}
+
+.dateline{font-size:1em;color:#aaa;margin-top:-.75em;margin-bottom:1.5em;font-weight:normal}
+
+/* ═══ DF .smallprint ═══ */
+.linkedlist + .smallprint{margin-top:150px}
+.smallprint{margin-top:4em;line-height:1.8em;text-align:left;color:#aaa}
+</style>
+</head>
+<body id="top">
+
+<div id="Box">
+
+  <div id="Banner">
+    <p class="banner-name" id="banner-name"></p>
+    <p class="banner-tag" id="banner-tag"></p>
+  </div>
+
+  <div id="Sidebar">
+    <ul id="side-list"></ul>
+  </div>
+
+  <div id="Main">
+    <div id="main-list"></div>
+    <p class="smallprint" id="smallprint"></p>
+  </div>
+
+</div>
+
+<script>
+/* ══════════════ 界面文案：要改字只改这一段 ══════════════ */
+window.MOCK_DATA = {
+  "site": {
+    "name": "raylic.work",
+    "tagline": "个人项目目录",
+    "label": "封面",
+    "docTitle": "个人项目目录"
+  },
+  "cover": {
+    "title": [
+      {
+        "star": true,
+        "text": "在AI时代，",
+        "strong": "探寻真实的自我",
+        "delay": 0.1
+      }
+    ],
+    "boxes": [
+      {
+        "heading": "目录里有什么",
+        "text": "以桌面端网页和移动端PWA为主的项目说明及截图，大部分可在线使用",
+        "strong": "所有项目ui经过精心设计，界面美观",
+        "tail": "。",
+        "button": "开始浏览"
+      },
+      {
+        "heading": "本地优先原则",
+        "text": "所有的设计都旨在将数据保存在本地，",
+        "strong": "数据的归属权归用户",
+        "tail": "。",
+        "button": "了解更多"
+      }
+    ]
+  },
+  "ui": {
+    "openWork": "打开作品",
+    "shotTitle": "展示图",
+    "shotNote": "待放入作品截图"
+  },
+  "works": [
+    {
+      "name": "照片地图",
+      "meta": "在线 · 自托管 · 2026",
+      "href": "https://photo.raylic.work/",
+      "desc": "把照片按拍摄地钉在中国地图上，走哪儿亮哪儿"
+    },
+    {
+      "name": "拾光手帐",
+      "meta": "在线 · 自托管 · 2026",
+      "href": "https://days.raylic.work/",
+      "desc": "一天一篇，写给自己的日记"
+    },
+    {
+      "name": "喵星晴",
+      "meta": "在线 · 2026",
+      "href": "https://mood.raylic.work/",
+      "desc": "点一下心情，对方的手机就收到通知"
+    },
+    {
+      "name": "睡眠记录",
+      "meta": "在线 · 开源 · 2026",
+      "href": "https://raylic.github.io/sleep-record/",
+      "desc": "移动端睡眠追踪 PWA，离线也能记"
+    },
+    {
+      "name": "月亮",
+      "meta": "本地 · 2026",
+      "href": "",
+      "desc": "记录周期，不上传任何东西"
+    },
+    {
+      "name": "subscribe",
+      "meta": "自托管 · 2026",
+      "href": "",
+      "desc": "每天定时跑一遍订阅，把该说的合成一条推到手机"
+    },
+    {
+      "name": "ntfy",
+      "meta": "在线 · 自托管 · 2026",
+      "href": "https://ntfy.raylic.work/",
+      "desc": "自己的推送通道，不经过任何厂商"
+    },
+    {
+      "name": "服务面板",
+      "meta": "本地 · 2026",
+      "href": "",
+      "desc": "一键起停本机那些零零碎碎的服务"
+    },
+    {
+      "name": "杂志迷阅读器",
+      "meta": "本地 · 2026",
+      "href": "",
+      "desc": "把杂志扫描页读成文字，还能听"
+    },
+    {
+      "name": "厨房管家",
+      "meta": "本地 · 2026",
+      "href": "",
+      "desc": "只做餐食计划的本地应用，数据不进云"
+    },
+    {
+      "name": "Nuti",
+      "meta": "本地 · 2026",
+      "href": "",
+      "desc": "记录每天吃了什么，盯住三大营养素"
+    },
+    {
+      "name": "文章分类",
+      "meta": "实验 · 本地 · 2026",
+      "href": "",
+      "desc": "让 AI 学会我的偏好，自动给帖子分好坏"
+    },
+    {
+      "name": "文章分类 Android",
+      "meta": "实验 · 2026",
+      "href": "",
+      "desc": "上一项的 Android 稳定版，规则库的权威写入方"
+    },
+    {
+      "name": "MD 阅读器",
+      "meta": "本地 · 2026",
+      "href": "",
+      "desc": "把散落的 markdown 变成一个能读的站"
+    },
+    {
+      "name": "语音克隆朗读",
+      "meta": "Chrome 扩展 · 2026",
+      "href": "",
+      "desc": "选中网页文字，用克隆的音色念出来"
+    }
+  ]
+};
+/* ══════════════════════════════════════════════════════ */
+
+const { site: SITE, works: WORKS } = window.MOCK_DATA;
+document.title = SITE.docTitle;
+
+const esc = s => String(s).replace(/[&<>"]/g,
+  c => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;' }[c]));
+
+document.getElementById('banner-name').textContent = SITE.name;
+document.getElementById('banner-tag').textContent  = SITE.tagline;
+
+/* 侧栏只留一条 */
+document.getElementById('side-list').innerHTML = '<li><a href="#top">顶部</a></li>';
+
+/* 主体：一条平的 dl.linkedlist（跟 DF 首页一样，不分组的） */
+document.getElementById('main-list').innerHTML = `<dl class="linkedlist">
+${WORKS.map(w => `  <dt>${w.href
+    ? `<a href="${esc(w.href)}" target="_blank" rel="noopener noreferrer">${esc(w.name)}</a>`
+    : esc(w.name)}&nbsp;<span class="permalink">&#9733;</span></dt>
+  <dd>
+    <p>${esc(w.desc)}</p>
+  </dd>`).join('\n')}
+</dl>`;
+
+document.getElementById('smallprint').innerHTML =
+  `${WORKS.length} 个项目 · ${esc(SITE.name)} · 版式复刻自 ` +
+  `<a href="https://daringfireball.net/">Daring Fireball</a>`;
+
+if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
+</script>
+</body>
+</html>
