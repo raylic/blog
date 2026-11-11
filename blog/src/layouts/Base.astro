@@ -26,8 +26,9 @@ const fullTitle = title ? `${title} · raylic.work` : 'raylic.work · 写作 · 
       href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&family=Noto+Sans+SC:wght@400;500;700&display=swap"
       rel="stylesheet"
     />
-    <!-- pagefind：构建时生成的本地搜索，仅 build 后可用 -->
-    <script src="/pagefind/pagefind.js" defer></script>
+    <!-- pagefind：构建时生成的本地搜索，仅 build 后可用。
+         pagefind.js 由 component-ui 在搜索时动态 import，不要再用经典 script 引入
+         （classic script 解析 import.meta 会报错）。 -->
     <link href="/pagefind/pagefind-component-ui.css" rel="stylesheet" />
     <script src="/pagefind/pagefind-component-ui.js" defer></script>
   </head>

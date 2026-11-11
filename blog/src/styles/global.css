@@ -400,3 +400,78 @@ a:hover { text-decoration: underline; text-underline-offset: 3px; }
   .smallprint,
   .smallprint-article { padding-top: 40px; padding-bottom: 40px; }
 }
+
+/* ===== 搜索（pagefind 组件覆盖） =====
+   pagefind 组件用 :is(*, #\#) 三连缀做 ID 级特异性，且节点是运行时
+   生成的（scoped style 够不到），所以覆盖也用同样的前缀 + .search 作用域。
+   颜色/尺寸走 --pf-* 变量，结构性差异用下面的规则。 */
+.search {
+  --pf-font: var(--f-sans);
+  --pf-text: var(--c-body);
+  --pf-text-secondary: var(--c-muted);
+  --pf-text-muted: var(--c-placeholder);
+  --pf-background: var(--search-bg);
+  --pf-border: #888;
+  --pf-border-focus: #b6bcc2;
+  --pf-hover: #4a525a;
+  --pf-mark: var(--c-body);
+  --pf-input-height: 26px;
+  --pf-input-font-size: var(--fs-search);
+  --pf-border-radius: 4px;
+  --pf-shadow-md: none;
+  --pf-dropdown-z-index: 10;
+  --pf-searchbox-dropdown-max-height: 320px;
+}
+
+:is(*, #\#):is(*, #\#):is(*, #\#):is(*, #\#) .search .pf-searchbox-input {
+  padding: 0 8px;
+}
+
+:is(*, #\#):is(*, #\#):is(*, #\#):is(*, #\#) .search .pf-searchbox-input:focus-visible {
+  border-color: #b6bcc2;
+  box-shadow: none;
+}
+
+/* 去掉默认圆形搜索图标 */
+:is(*, #\#):is(*, #\#):is(*, #\#):is(*, #\#) .search .pf-searchbox-input-wrapper::before {
+  content: none;
+}
+
+:is(*, #\#):is(*, #\#):is(*, #\#):is(*, #\#) .search .pf-searchbox-dropdown {
+  top: calc(100% + 4px);
+  left: auto;
+  right: 0;
+  width: 280px;
+  border: 1px solid var(--c-rule);
+  border-radius: 4px;
+  box-shadow: none;
+  padding: 8px;
+  overflow-y: auto;
+}
+
+:is(*, #\#):is(*, #\#):is(*, #\#):is(*, #\#) .search .pf-searchbox-result {
+  padding: 6px 8px;
+  min-height: 0;
+  border-radius: 3px;
+  color: var(--c-ink);
+}
+
+:is(*, #\#):is(*, #\#):is(*, #\#):is(*, #\#) .search .pf-searchbox-result:hover {
+  background: var(--pf-hover);
+  text-decoration: none;
+}
+
+:is(*, #\#):is(*, #\#):is(*, #\#):is(*, #\#) .search .pf-searchbox-result-title {
+  font-size: 14px;
+  color: var(--c-body);
+}
+
+:is(*, #\#):is(*, #\#):is(*, #\#):is(*, #\#) .search .pf-searchbox-result-excerpt {
+  color: var(--c-muted);
+}
+
+/* 去掉组件自带的键盘提示 footer（原设计没有）。
+   组件 CSS 运行时注入、排在站点样式表后面，这里多加一层 :is 保证胜出。 */
+:is(*, #\#):is(*, #\#):is(*, #\#):is(*, #\#) .search .pf-searchbox-footer {
+  display: none;
+}

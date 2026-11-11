@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "astro dev",
     "admin": "astro dev --open /keystatic",
-    "build": "astro build && pagefind --site dist/",
+    "build": "astro build && pagefind --site dist/ --glob \"posts/**\"",
     "ship": "bash scripts/ship.sh",
     "preview": "astro preview",
     "astro": "astro"
