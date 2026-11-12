@@ -2,7 +2,8 @@
 title: Epub-audiobook项目介绍
 description: 将一本epub格式的电子书，变成有声音频。先从文本解析说话人、然后对不同的说话人指定不同的音色，让你喜欢的声音给你读书。
 date: 2026-11-11
-tags: []
+tags:
+  - 项目介绍
 pinned: false
 draft: false
 ---
