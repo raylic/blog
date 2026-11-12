@@ -3,6 +3,10 @@
 #
 #   npm run ship                    # 提交信息自动生成
 #   npm run ship -- "写了篇 xx"      # 自定义提交信息
+#
+# 前提：Cloudflare 上是「Git 集成」项目（当前为 blog-git，源 = raylic/blog 的 main）。
+#       Direct Upload 项目不会响应 push，且无法事后改成 Git 集成，只能新建项目。
+#       项目里看不到自动构建时，先查 README「发布」一节的排障条目。
 set -euo pipefail
 
 BLOG_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
@@ -31,4 +35,5 @@ git add -A
 git commit -m "$MSG"
 git push
 
-echo "==> 已推送，Cloudflare Pages 正在自动构建（Pages → 项目 → Production deployments）"
+echo "==> 已推送，Cloudflare Pages 正在自动构建（Dashboard → Workers & Pages → blog-git → Deployments）"
+echo "    通常 1~2 分钟出结果；没动静先查项目 Settings → Build 里的 Git 集成是否还在"
