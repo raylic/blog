@@ -39,5 +39,29 @@ const fullTitle = title ? `${title} · raylic.work` : 'raylic.work · 写作 · 
         <p class="smallprint-inner">最近更新 2026-10-15 · raylic.work</p>
       </div>
     </footer>
+    <!-- Lightbox：正文图点击后全屏放大；点背景或按 Esc 关闭。零依赖。 -->
+    <dialog class="lightbox" id="lightbox">
+      <button class="lightbox-close" type="button" aria-label="关闭放大图">×</button>
+      <img alt="" />
+    </dialog>
+    <script>
+      (() => {
+        const lb = document.getElementById('lightbox');
+        const lbImg = lb.querySelector('img');
+        document.addEventListener('click', (e) => {
+          const img = e.target.closest('.prose img');
+          if (img && !lb.open) {
+            lbImg.src = img.src;
+            lbImg.alt = img.alt || '';
+            lb.showModal();
+          }
+        });
+        // 点图片本身不关，只有点背景（dialog 本体）才关
+        lb.addEventListener('click', (e) => {
+          if (e.target === lb) lb.close();
+        });
+        lb.querySelector('.lightbox-close').addEventListener('click', () => lb.close());
+      })();
+    </script>
   </body>
 </html>

@@ -59,6 +59,17 @@ npm run ship -- "写了篇 xx"      # 自定提交信息
 
 `scripts/ship.sh` 会先跑一次 `npm run build`：本地构建失败就直接退出，不往云上推（白跑一轮 CI 很费时间）。
 
+### 在后台里点一下发布
+
+`npm run admin` 起的 Keystatic 页面右下角有一个「↑ 发布」按钮，点开后确认提交信息 → 推送，等价于在终端跑 `git add -A && git commit && git push`（少了本地构建自检那一轮）。
+
+实现：`src/middleware.ts`，只在 dev 生效两件事——
+
+- 往 `/keystatic` 的 HTML 里注入那个浮动按钮
+- 提供 `POST /api/publish` 执行 git 命令
+
+生产构建时 `import.meta.env.DEV` 为 false，不注入也不开接口（后台本来就不上线）。改动 `src/middleware.ts` 后需重启 dev server。
+
 ### Pages 项目的构建参数（已配好，改之前想清楚）
 
 | 字段 | 值 |

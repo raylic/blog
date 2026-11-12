@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "astro dev",
     "admin": "astro dev --open /keystatic",
-    "build": "astro build && pagefind --site dist/ --glob \"posts/**\"",
+    "build": "node scripts/webp.mjs && astro build && pagefind --site dist/ --glob \"posts/**\"",
+    "webp": "node scripts/webp.mjs",
     "ship": "bash scripts/ship.sh",
     "preview": "astro preview",
     "astro": "astro"
@@ -20,6 +21,7 @@
     "react-dom": "^19.3.1"
   },
   "devDependencies": {
-    "pagefind": "^1.6.0"
+    "pagefind": "^1.6.0",
+    "sharp": "^0.34.5"
   }
 }

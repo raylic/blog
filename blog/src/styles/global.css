@@ -293,7 +293,7 @@ a:hover { text-decoration: underline; text-underline-offset: 3px; }
 }
 .prose pre code { background: none; padding: 0; font-size: 0.88em; }
 .prose hr { border: none; border-top: 1px solid var(--c-rule); margin: 32px 0; }
-.prose img { max-width: 100%; height: auto; }
+.prose img { max-width: 100%; height: auto; cursor: zoom-in; }
 .prose table { width: 100%; border-collapse: collapse; margin-bottom: var(--para-pad-bottom); }
 .prose th, .prose td { border: 1px solid var(--c-rule); padding: 8px 12px; text-align: left; }
 
@@ -474,4 +474,53 @@ a:hover { text-decoration: underline; text-underline-offset: 3px; }
    组件 CSS 运行时注入、排在站点样式表后面，这里多加一层 :is 保证胜出。 */
 :is(*, #\#):is(*, #\#):is(*, #\#):is(*, #\#) .search .pf-searchbox-footer {
   display: none;
+}
+
+/* ---------- Lightbox：正文图点击后全屏放大 ---------- */
+.lightbox {
+  position: fixed;
+  inset: 0;
+  /* UA 默认 dialog 是 width:fit-content（有的还带 max-width），不显式覆写的话
+     盒宽由内容决定，inset 的右/下边被忽略，会露出浅色 backdrop */
+  width: auto;
+  height: auto;
+  max-width: none;
+  max-height: none;
+  margin: 0;
+  padding: 0;
+  border: none;
+  background: rgba(0, 0, 0, 0.2);
+  cursor: zoom-out;
+}
+/* display 只能放在 [open] 里：dialog 关闭态靠 UA 的 display:none 隐藏，
+   作者在基础态写 display 会把遮罩变成常显 */
+.lightbox[open] {
+  display: grid;
+  place-items: center;
+  padding: 64px;
+}
+.lightbox::backdrop {
+  background: rgba(0, 0, 0, 0.2);
+}
+.lightbox-close {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  width: 40px;
+  height: 40px;
+  border: none;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.45);
+  color: #fff;
+  font-size: 22px;
+  line-height: 1;
+  cursor: pointer;
+}
+.lightbox-close:hover {
+  background: rgba(0, 0, 0, 0.65);
+}
+.lightbox img {
+  display: block;
+  max-width: 100%;
+  max-height: 100%;
 }
