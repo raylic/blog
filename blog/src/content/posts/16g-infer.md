@@ -5,7 +5,7 @@ tags: []
 pinned: false
 draft: false
 ---
-一块16G显存的显卡，在本地电脑跑模型推理。在模型能力、上下文长度、推理速度上截止文章发布的时间（26.11.12）各方面综合考虑下最优的方案。
+一块16G显存的游戏显卡，在本地电脑跑模型推理。在模型能力、上下文长度、推理速度上截止文章发布的时间（26.11.14）各方面综合考虑下最优的方案。
 
 ## 笔者的本地硬件
 
@@ -49,7 +49,7 @@ qwen 3.8 27B一经发布，社区里出现了很多版本。其中可以被称�
 
 #### 为什么是原版而非社区后训练版
 
-答：没提供GSQ-RCO量化方式的q3基本可以直接pass。常规量化方案的低量化（q4以下）带来的性能损失大到不可忽视。这是我自己走过最大的弯路，对于iq3_s档位而言，**GSQ-RCO对低量化能力保留的重要性远大于后训练带来的能力提升**。后训练模型通常是在较高的量化等级（比如Q4_K_M 需要24G显存）。事实上，后训练模型作者通常自有高显存显卡，通常也更关注高量化等级下的性能表现，所以我一开始就是拿这高量化等级的成绩单去找模型，然后找到对应模型后，再下载对应的q3版本，结果是特别难用。
+答：没提供GSQ-RCO量化方式的q3基本可以直接pass。常规量化方案的低量化（q4以下）带来的性能损失大到不可忽视。这是我自己走过最大的弯路，对于iq3_s档位而言，**GSQ-RCO对低量化能力保留的重要性远大于后训练带来的能力提升**。后训练模型通常是在较高的量化等级（比如Q4_K_M 需要24G显存）做对比，16G的情况通常是失真的。后训练模型作者通常自有高显存显卡，通常也更关注高量化等级下的性能表现（真的存在对16G极致优化的大佬欢迎打脸）。所以我一开始就是拿这高量化等级的成绩单去找模型，然后找到对应模型后，再下载对应的q3版本，结果是特别难用。
 
 #### 后训练版+GSQ-RCO岂不是好处都能得到
 
@@ -102,6 +102,4 @@ qwen 3.8 27B一经发布，社区里出现了很多版本。其中可以被称�
 
 kvmem的作者已帮我们整理好了dflash + ninfer文件[https://modelscope.cn/collections/KVMem/16GB--xiancuntuijianmoxing](https://modelscope.cn/collections/KVMem/16GB--xiancuntuijianmoxing)
 
-kvmem-ninfer-server 引擎下载
-
-[https://github.com/kvmem/kvmem/releases/tag/v0.19.1](https://github.com/kvmem/kvmem/releases/tag/v0.19.1)&#x20;
+kvmem-ninfer-server 引擎下载 [https://github.com/kvmem/kvmem/releases/tag/v0.19.1](https://github.com/kvmem/kvmem/releases/tag/v0.19.1)&#x20;
