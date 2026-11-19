@@ -1,10 +1,12 @@
 ---
 title: '深入理解React Filber篇 '
 description: 介绍fiber结构、DFS算法、Diff过程以及双缓存架构
-date: 2026-11-13
-tags: []
+date: 2026-11-19
+tags:
+  - 前端
+series: 深入理解React
 pinned: false
-draft: true
+draft: false
 ---
 ## Fiber节点、Fiber树
 
