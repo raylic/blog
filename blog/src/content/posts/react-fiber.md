@@ -1,5 +1,5 @@
 ---
-title: '深入理解React Filber篇 '
+title: '深入理解React Fiber篇 '
 description: 介绍fiber结构、DFS算法、Diff过程以及双缓存架构
 date: 2026-11-19
 tags:
@@ -12,7 +12,7 @@ draft: false
 
 ### 结构
 
-![](/uploads/react-filber/%E6%88%AA%E5%B1%8F2026-11-19%2013.13.09.png)
+![](/uploads/react-fiber/%E6%88%AA%E5%B1%8F2026-11-19%2013.13.09.png)
 
 纵向的child链、横向的sblding链，每个节点有一个指向父节点的return指针，构成了整个fiber树。
 
@@ -76,7 +76,7 @@ Fiber Diff 算法的本质，是基于旧 siblding链、新的组件数组（JSX
 * 时机：是在DFS过程`completeUnitOfWork`到父节点的时候进行的。
 * 对比项：`key`、`Element`，不对比 `props`
 
-过程将diff分成了 **尾部新增**、**删除**，顺序改变（中间插入、中间删除）这两种情况处理 ，其中尾部新增和删除是一种特殊情况，可以高效对比完成，而其余情况为两能复用建MapFiber。
+diff将变更分成了 **尾部新增**、**尾部删除**，**局部顺序改变**（中间插入、中间删除）这三种情况处理 ，其中尾部新增和删除是一种特殊情况，可以高效对比完成，而其余情况为两能复用建MapFiber。
 
 下称对比对象为旧链和新数组
 
@@ -95,7 +95,7 @@ Fiber Diff 算法的本质，是基于旧 siblding链、新的组件数组（JSX
 
 ## 双缓存架构
 
-![](/uploads/react-filber/%E6%88%AA%E5%B1%8F2026-11-19%2016.04.19.png)
+![](/uploads/react-fiber/%E6%88%AA%E5%B1%8F2026-11-19%2016.04.19.png)
 
 双缓存架构的核心是两个互为备份的Fiber树，我们称为X 和 Y。
 
